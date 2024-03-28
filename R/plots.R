@@ -448,7 +448,7 @@ plot.strata_doctopic <- function(x, show_topic = NULL, var_name = NULL, by = c("
 #' @export
 plot_timetrend <- function(x, show_topic = NULL, time_index_label = NULL,
                            ci = 0.9, method = c("hdi", "eti"), point = c("mean", "median"),
-                           xlab = "Time", scales = "fixed", show_point = TRUE, ...)
+                           xlab = "Time", scales = "fixed", vline = NULL,  show_point = TRUE, ...)
 {
   method <- rlang::arg_match(method)
   point <- rlang::arg_match(point)
@@ -502,6 +502,11 @@ plot_timetrend <- function(x, show_topic = NULL, time_index_label = NULL,
     if (show_point)
       p <- p + geom_point(size = 0.9)
   }
+  
+  if (!is.null(vline)) {
+    p <- p + geom_vline(xintercept = as.Date(vline), color = "red", linetype = "dashed")
+  }
+  
   p <- p + xlab(xlab) + ylab(expression(paste("Mean of ", theta))) +
         facet_wrap(~.data$Topic, scales = scales) + theme_bw() + theme(panel.grid.minor = element_blank())
   dat <- dplyr::left_join(dat, time_index_tbl, by = "time_index") %>%
